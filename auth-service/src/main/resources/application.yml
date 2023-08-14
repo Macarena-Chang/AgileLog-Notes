@@ -19,6 +19,13 @@ spring:
     hibernate:
       ddl-auto: update
       
+# Configure Actuator Endpoints     
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+      
 logging:
   level:
     org.springframework.security: DEBUG
