@@ -1,16 +1,17 @@
 package com.macarenachang.authservice.service;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.macarenachang.authservice.dao.UserRepository;
+import com.macarenachang.authservice.model.Authority;
 import com.macarenachang.authservice.model.User;
-import org.springframework.beans.factory.annotation.Autowired;
+import java.util.Set;
 
 @Service
 public class UserService {
-
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
@@ -21,19 +22,22 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public User register(User user) {
-        // Check if email is already registered
-        if (userRepository.findByEmail(user.getEmail()) != null) {
-            throw new RuntimeException("Email already registered");
-        }
+    public boolean existsByEmail(String email) {
+        return userRepository.existsByEmail(email);
+    }
 
-        // Hash the password before saving the user
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        
-        return userRepository.save(user);
-    } 
+    @Transactional
+    public User registerUser(String email, String password) {
+        User newUser = new User(email, password);
+        // Encrypt the user's password
+        newUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
 
+        // Set default role
+        Authority userAuthority = new Authority(newUser, "USER");
+        newUser.setAuthorities(Set.of(userAuthority));
 
-    
+        // Save the user to the database using UserRepository
+        return userRepository.save(newUser);
+    }
+
 }
-
