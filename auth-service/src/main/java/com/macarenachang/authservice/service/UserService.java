@@ -26,5 +26,13 @@ public class UserService {
     public User registerUser(String email, String password) {
         return registrationStrategy.register(email, password);
     }
+    
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
+
+    public void deleteUser(User user) {
+        userRepository.delete(user);
+    }
 
 }
