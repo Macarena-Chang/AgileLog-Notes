@@ -10,7 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
 class UserRegistrationIntegrationTest {
-
+// integration test
     @Autowired
     private UserService userService;
     
